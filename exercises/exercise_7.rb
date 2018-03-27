@@ -16,6 +16,13 @@ class Store < ActiveRecord::Base
   validates :annual_revenue, numericality: {greater_than_or_equal_to: 0}
   validate :carries_apparel
 
+
+  before_destroy do
+    if self.employees.count > 0
+      throw :abort
+    end
+  end
+
   private
 
   def carries_apparel
