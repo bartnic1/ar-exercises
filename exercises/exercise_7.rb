@@ -27,18 +27,38 @@ end
 
 class Employee < ActiveRecord::Base
   belongs_to :store
+
   validates :first_name, presence:true
   validates :last_name, presence:true
   validates_inclusion_of :hourly_rate, in: 40..200
   validates :store_id, presence: true
-end
 
-puts "Please enter a store name: "
-@new_store_name = gets.chomp
-@new_store = Store.create(name: @new_store_name)
+  before_save do
+    if self.password == nil
+      self.password = rand_pass
+    end
+  end
 
-if @new_store.errors.any?
-  @new_store.errors.each do |attribute, message|
-    puts "Errors: #{attribute} #{message}"
+  private
+
+  def rand_pass
+    alphanum = 'abcdefghijklmnopqrstuvwxyz0123456789' #36
+    pass = ''
+    (0..5).each do |i|
+      pass += alphanum[rand(36)]
+    end
+    pass
   end
 end
+
+# UNCOMMENT THIS LATER
+
+# puts "Please enter a store name: "
+# @new_store_name = gets.chomp
+# @new_store = Store.create(name: @new_store_name)
+
+# if @new_store.errors.any?
+#   @new_store.errors.each do |attribute, message|
+#     puts "Errors: #{attribute} #{message}"
+#   end
+# end
